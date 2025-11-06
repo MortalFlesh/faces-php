@@ -1,0 +1,51 @@
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+# Include .gitkeep files everywhere
+!.gitkeep
+
+www/bundles/
+
+bin/
+!bin/console
+!bin/build-deb-*
+
+/build/
+/code-coverage
+
+# configuration
+**/*.local.yaml
+**/*.local.yml
+docker-compose.local.yml
+
+/.idea
+/*.iml
+nbproject
+
+# third party
+node_modules
+npm-debug.log
+public/static/
+
+#selenium
+selenium-tests/vendor
+# log files etc.
+selenium-tests/logs/*
+
+# deployment
+robo.phar
+deployment/vendor/
+
+# tools
+/tools/**/vendor/
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
