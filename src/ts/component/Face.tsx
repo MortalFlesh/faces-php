@@ -1,3 +1,5 @@
+import {z} from "zod";
+
 export function FaceSkeleton() {
     return (
         <div className="face-item loading" style={{ backgroundColor: '#e0e0e0' }}>
@@ -29,7 +31,27 @@ export function Face({ face }: FaceProps) {
     )
 }
 
+/**
+ * @see StudyItem.php
+ */
+const FaceSchema = z.strictObject({
+    smiley: z.string(),
+    color: z.string(),
+});
+
+const createFace = (id: number, data: z.infer<typeof FaceSchema>): FaceType => ({
+    id,
+    smiley: data.smiley,
+    color: data.color,
+});
+
 export function parseFace(index: number, raw: string | object): FaceType|null {
-    // todo
-    return null
+    const rawData = typeof raw === 'string' ? raw : JSON.stringify(raw);
+    const result = FaceSchema.safeParse(JSON.parse(rawData));
+
+    if (!result.success) {
+        return null
+    }
+
+    return createFace(index, result.data);
 }

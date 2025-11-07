@@ -1,11 +1,28 @@
-import { useState, useEffect } from 'react'
+import {useEffect, useState} from 'react'
 import {Face, FaceSkeleton, FaceType, parseFace} from "./Face";
 import {FaceLegend, FaceLegendType} from "./FaceLegend";
 
-const exampleFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => ({
+const exampleFaces: FaceType[] = Array.from({length: 16}, (_, index) => ({
     id: index,
     smiley: ['😊', '😀', '😎', '🤗', '😇', '🥳', '😍', '🤩', '😜', '🙃', '😋', '🤪', '😏', '🥰', '😌', '🤓'][index],
-    color: ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DFE6E9', '#A29BFE', '#FF7675', '#74B9FF', '#A29BFE', '#FD79A8', '#FDCB6E', '#6C5CE7', '#00B894', '#E17055'][index]
+    color: [
+        '#FFD700',
+        '#FF6B6B',
+        '#4ECDC4',
+        '#45B7D1',
+        '#96CEB4',
+        '#FFEAA7',
+        '#DFE6E9',
+        '#A29BFE',
+        '#FF7675',
+        '#74B9FF',
+        '#A29BFE',
+        '#FD79A8',
+        '#FDCB6E',
+        '#6C5CE7',
+        '#00B894',
+        '#E17055'
+    ][index]
 }))
 
 const runtimeErrorColor = '#D63031';
@@ -49,8 +66,8 @@ const faceLegend: Record<string, FaceLegendType> = {
     },
 }
 
-const initialFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => (faceLegend.initial.face(index)))
-const errorFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => (faceLegend.error.face(index)))
+const initialFaces: FaceType[] = Array.from({length: 16}, (_, index) => (faceLegend.initial.face(index)))
+const errorFaces: FaceType[] = Array.from({length: 16}, (_, index) => (faceLegend.error.face(index)))
 
 // Helper function to fetch with timeout
 const fetchWithTimeout = (url: string, timeout: number = 1000): Promise<Response> => {
@@ -83,7 +100,7 @@ export default function FaceDashboard() {
         setLoading(true)
         try {
             // Fetch 16 faces from the API with 1 second timeout
-            const facePromises = Array.from({ length: 16 }, (_, index) =>
+            const facePromises = Array.from({length: 16}, (_, index) =>
                 fetchWithTimeout('/face', 1000)
                     .then(res => res.json())
                     .then(data => parseFace(index, data) ?? faceLegend.parseError.face(index))
@@ -119,7 +136,7 @@ export default function FaceDashboard() {
                 <div className="face-grid">
                     {loading ? (
                         // Show loading placeholders
-                        Array.from({ length: 16 }).map((_, index) => (
+                        Array.from({length: 16}).map((_, index) => (
                             <FaceSkeleton key={index} />
                         ))
                     ) : (
