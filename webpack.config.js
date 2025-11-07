@@ -10,7 +10,7 @@ module.exports = (env, argv) => {
         entry: `./src/ts/index.tsx`,
         output: {
             filename: 'main.min.js',
-            path: path.resolve(__dirname, 'public/main'),
+            path: path.resolve(__dirname, 'public'),
             publicPath: '/',
         },
         module: {

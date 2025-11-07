@@ -33,6 +33,12 @@ node_modules
 npm-debug.log
 public/static/
 
+# webpack build output
+public/*.min.js
+public/*.min.css
+public/main.*.js
+public/main.*.css
+
 #selenium
 selenium-tests/vendor
 # log files etc.
