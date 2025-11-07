@@ -31,7 +31,7 @@ function Smiley({face}: { face: FaceType }) {
 
 export function Face({face, isLoading = false}: FaceProps) {
     return (
-        <div key={face.id} className={cn('face-item', {loading: isLoading})} style={{backgroundColor: face.color}}>
+        <div className={cn('face-item', {loading: isLoading})} style={{backgroundColor: face.color}}>
             {isLoading
                 ? <FaceSkeleton />
                 : <Smiley face={face} />
