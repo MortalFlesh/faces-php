@@ -8,6 +8,8 @@ const exampleFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => ({
     color: ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DFE6E9', '#A29BFE', '#FF7675', '#74B9FF', '#A29BFE', '#FD79A8', '#FDCB6E', '#6C5CE7', '#00B894', '#E17055'][index]
 }))
 
+const runtimeErrorColor = '#D63031';
+
 const faceLegend: Record<string, FaceLegendType> = {
     initial: {
         name: 'Initial',
@@ -24,7 +26,7 @@ const faceLegend: Record<string, FaceLegendType> = {
         face: (id: number): FaceType => ({
             id,
             smiley: '💀',
-            color: '#D63031'
+            color: runtimeErrorColor
         })
     },
     parseError: {
@@ -33,13 +35,32 @@ const faceLegend: Record<string, FaceLegendType> = {
         face: (id: number): FaceType => ({
             id,
             smiley: '🤯',
-            color: '#D63031'
+            color: runtimeErrorColor
+        })
+    },
+    timeout: {
+        name: 'Timeout',
+        description: 'Request timed out',
+        face: (id: number): FaceType => ({
+            id,
+            smiley: '😴',
+            color: runtimeErrorColor
         })
     },
 }
 
 const initialFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => (faceLegend.initial.face(index)))
 const errorFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => (faceLegend.error.face(index)))
+
+// Helper function to fetch with timeout
+const fetchWithTimeout = (url: string, timeout: number = 1000): Promise<Response> => {
+    return Promise.race([
+        fetch(url),
+        new Promise<Response>((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), timeout)
+        )
+    ])
+}
 
 export default function FaceDashboard() {
     const [loading, setLoading] = useState(false)
@@ -61,11 +82,17 @@ export default function FaceDashboard() {
     const fetchFaces = async () => {
         setLoading(true)
         try {
-            // Fetch 16 faces from the API
+            // Fetch 16 faces from the API with 1 second timeout
             const facePromises = Array.from({ length: 16 }, (_, index) =>
-                fetch('/face')
+                fetchWithTimeout('/face', 1000)
                     .then(res => res.json())
                     .then(data => parseFace(index, data) ?? faceLegend.parseError.face(index))
+                    .catch((error) => {
+                        if (error.message === 'Timeout') {
+                            return faceLegend.timeout.face(index)
+                        }
+                        throw error
+                    })
             )
 
             const fetchedFaces = await Promise.all(facePromises)
