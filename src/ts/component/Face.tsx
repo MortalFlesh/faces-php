@@ -23,9 +23,7 @@ export type FaceProps = {
 
 function Smiley({face}: { face: FaceType }) {
     return (
-        <div className="face-emoji">
-            {face.smiley}
-        </div>
+        <div className="face-emoji" dangerouslySetInnerHTML={{ __html: face.smiley }} />
     )
 }
 

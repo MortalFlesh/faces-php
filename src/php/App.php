@@ -46,8 +46,8 @@ class App
 
     public function face(Request $request): \JsonSerializable
     {
-        $face = new Face('😀', '#228833');  // Green from faces-demo
-        $face2 = new Face('😎', '#66CCEE'); // Blue from faces-demo
+        $face = new Face('😀', '#00B894');
+        $face2 = new Face('😎', '#0984E3');
 
         return $this->dice->roll() > 3 ? $face : $face2;
     }
