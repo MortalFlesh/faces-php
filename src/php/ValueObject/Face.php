@@ -4,9 +4,7 @@ namespace MF\Faces\ValueObject;
 
 readonly class Face implements \JsonSerializable
 {
-    public function __construct(private string $smiley, private string $color)
-    {
-    }
+    public function __construct(private string $smiley, private string $color) {}
 
     public function jsonSerialize(): array
     {

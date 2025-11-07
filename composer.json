@@ -40,10 +40,10 @@
     "config": {
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
             "ergebnis/composer-normalize": true,
             "php-http/discovery": true,
-            "phpstan/extension-installer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "phpstan/extension-installer": true
         },
         "bin-dir": "bin",
         "preferred-install": {
@@ -72,9 +72,7 @@
         "lint": [
             "@composer validate",
             "@composer normalize --dry-run",
-            "bin/console lint:twig templates",
-            "bin/console lint:yaml src config templates translations",
-            "bin/parallel-lint -j 10 -e php ./deployment/src ./src ./tests ecs.php"
+            "bin/parallel-lint -j 10 -e php ./src/php ./tests ecs.php"
         ],
         "phpstan": "bin/phpstan analyze -l 8 -c phpstan.neon src tests",
         "phpstan-src": "bin/phpstan analyze -l 8 -c phpstan.neon src",

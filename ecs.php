@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
 use Lmc\CodingStandard\Set\SetList;
-use PhpCsFixer\Fixer\FunctionNotation\PhpdocToParamTypeFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
 return ECSConfig::configure()
@@ -13,4 +12,6 @@ return ECSConfig::configure()
     ->withSets([
         SetList::ALMACAREER,
     ])
-    ->withSkip([]);
+    ->withSkip([
+        __DIR__ . '/src/index.php',
+    ]);

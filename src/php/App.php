@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace MF\Faces;
+
 use MF\Faces\Service\Dice;
 use MF\Faces\ValueObject\Face;
 use MF\Faces\ValueObject\UnifiedResponse;
@@ -32,9 +33,9 @@ class App
         $face = new Face('😀', '#00B894');
         $face2 = new Face('😎', '#0984E3');
 
-        $enableSleep = false;
+        $enableSleep = getenv('ENABLE_SLEEP');
 
-        if ($enableSleep) {
+        if ($enableSleep === 'true') {
             $sleepMilliseconds = $this->dice->roll() * 100;
             usleep($sleepMilliseconds * 1000);
 

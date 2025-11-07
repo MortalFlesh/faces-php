@@ -1,0 +1,46 @@
+# Node modules - will be installed during build
+node_modules
+
+# Build output - will be generated during build
+public/main
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+
+# PHP vendor files
+vendor
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+__tests__
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Documentation
+README.md
+docs/
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Other
+.npmrc
+
+# Docker files themselves
+dockers/
+

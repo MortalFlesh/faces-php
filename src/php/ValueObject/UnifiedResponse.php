@@ -6,6 +6,16 @@ use Symfony\Component\HttpFoundation\Request;
 
 readonly class UnifiedResponse implements \JsonSerializable
 {
+    public function __construct(
+        private string $clientAddress,
+        private int $status,
+        private array $headers,
+        private string $method,
+        private string $path,
+        private \JsonSerializable $body,
+        private array $additional = [],
+    ) {}
+
     public static function fromRequest(Request $request, \JsonSerializable $body, array $additional = []): self
     {
         return new self(
@@ -17,18 +27,6 @@ readonly class UnifiedResponse implements \JsonSerializable
             body: $body,
             additional: $additional,
         );
-    }
-
-    public function __construct(
-        private string $clientAddress,
-        private int $status,
-        private array $headers,
-        private string $method,
-        private string $path,
-        private \JsonSerializable $body,
-        private array $additional = [],
-    )
-    {
     }
 
     public function jsonSerialize(): array
