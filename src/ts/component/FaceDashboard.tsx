@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import {Face, FaceSkeleton, FaceType, parseFace} from "./Face";
-import {FaceLegend, FaceLegendType} from "./FaceLegend";
+import {faceLegend, FaceLegend} from "./FaceLegend";
 
 const exampleFaces: FaceType[] = Array.from({length: 16}, (_, index) => ({
     id: index,
@@ -24,47 +24,6 @@ const exampleFaces: FaceType[] = Array.from({length: 16}, (_, index) => ({
         '#E17055'
     ][index]
 }))
-
-const runtimeErrorColor = '#D63031';
-
-const faceLegend: Record<string, FaceLegendType> = {
-    initial: {
-        name: 'Initial',
-        description: 'Default face state',
-        face: (id: number): FaceType => ({
-            id,
-            smiley: '😢',
-            color: '#FF6B6B'
-        })
-    },
-    error: {
-        name: 'Error',
-        description: 'Failed to fetch face',
-        face: (id: number): FaceType => ({
-            id,
-            smiley: '💀',
-            color: runtimeErrorColor
-        })
-    },
-    parseError: {
-        name: 'Parse Error',
-        description: 'Error parsing face data',
-        face: (id: number): FaceType => ({
-            id,
-            smiley: '🤯',
-            color: runtimeErrorColor
-        })
-    },
-    timeout: {
-        name: 'Timeout',
-        description: 'Request timed out',
-        face: (id: number): FaceType => ({
-            id,
-            smiley: '😴',
-            color: runtimeErrorColor
-        })
-    },
-}
 
 const initialFaces: FaceType[] = Array.from({length: 16}, (_, index) => (faceLegend.initial.face(index)))
 const errorFaces: FaceType[] = Array.from({length: 16}, (_, index) => (faceLegend.error.face(index)))
