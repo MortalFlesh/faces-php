@@ -1,12 +1,11 @@
 import {z} from "zod";
+import cn from 'classnames'
 
 export function FaceSkeleton() {
     return (
-        <div className="face-item loading" style={{ backgroundColor: '#e0e0e0' }}>
-            <div className="face-loading-placeholder">
-                <div className="placeholder-circle"></div>
-                <div className="placeholder-text"></div>
-            </div>
+        <div className="face-loading-placeholder">
+            <div className="placeholder-circle"></div>
+            <div className="placeholder-text"></div>
         </div>
     )
 }
@@ -19,14 +18,24 @@ export type FaceType = {
 
 export type FaceProps = {
     face: FaceType
+    isLoading?: boolean
 }
 
-export function Face({ face }: FaceProps) {
+function Smiley({face}: { face: FaceType }) {
     return (
-        <div key={face.id} className="face-item" style={{ backgroundColor: face.color }}>
-            <div className="face-emoji">
-                {face.smiley}
-            </div>
+        <div className="face-emoji">
+            {face.smiley}
+        </div>
+    )
+}
+
+export function Face({face, isLoading = false}: FaceProps) {
+    return (
+        <div key={face.id} className={cn('face-item', {loading: isLoading})} style={{backgroundColor: face.color}}>
+            {isLoading
+                ? <FaceSkeleton />
+                : <Smiley face={face} />
+            }
         </div>
     )
 }
@@ -45,7 +54,7 @@ const createFace = (id: number, data: z.infer<typeof FaceSchema>): FaceType => (
     color: data.color,
 });
 
-export function parseFace(index: number, raw: string | object): FaceType|null {
+export function parseFace(index: number, raw: string | object): FaceType | null {
     const rawData = typeof raw === 'string' ? raw : JSON.stringify(raw);
     const result = FaceSchema.safeParse(JSON.parse(rawData));
 

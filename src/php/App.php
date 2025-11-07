@@ -27,11 +27,24 @@ class App
 
     public function face(Request $request): Response
     {
+        $data = [];
+
         $face = new Face('😀', '#00B894');
-        $sleep = $this->dice->roll() * 1000;
+        $face2 = new Face('😎', '#0984E3');
 
-        usleep($sleep);
+        $enableSleep = false;
 
-        return new JsonResponse(UnifiedResponse::fromRequest($request, $face, ['sleep' => $sleep]));
+        if ($enableSleep) {
+            $sleepMilliseconds = $this->dice->roll() * 100;
+            usleep($sleepMilliseconds * 1000);
+
+            $data += ['sleep' => $sleepMilliseconds];
+        }
+
+        return new JsonResponse(UnifiedResponse::fromRequest(
+            $request,
+            $this->dice->roll() > 3 ? $face : $face2,
+            $data,
+        ));
     }
 }
