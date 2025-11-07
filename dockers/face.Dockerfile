@@ -16,8 +16,7 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Copy application code
 COPY src/ ./src/
-COPY public/ ./public/
 
 EXPOSE 8080
 
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "src"]
