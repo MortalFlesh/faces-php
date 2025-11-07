@@ -14,8 +14,8 @@ export const faceLegend: Record<string, FaceLegendType> = {
         description: 'Default face state',
         face: (id: number): FaceType => ({
             id,
-            smiley: '😢',
-            color: '#FF6B6B'
+            smiley: '😐',
+            color: '#DFE6E9'
         })
     },
     error: {

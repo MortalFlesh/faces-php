@@ -34,7 +34,7 @@ export function Face({ face }: FaceProps) {
 /**
  * @see StudyItem.php
  */
-const FaceSchema = z.strictObject({
+const FaceSchema = z.object({
     smiley: z.string(),
     color: z.string(),
 });

@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import {Face, FaceSkeleton, FaceType, parseFace} from "./Face";
 import {faceLegend, FaceLegend} from "./FaceLegend";
 
@@ -57,33 +57,42 @@ export default function FaceDashboard() {
 
     const fetchFaces = async () => {
         setLoading(true)
+        // Start with initial faces
+        const tempFaces = [...initialFaces]
+        setFaces(tempFaces)
+
         try {
-            // Fetch 16 faces from the API with 1 second timeout
-            const facePromises = Array.from({length: 16}, (_, index) =>
+            // Fetch all 16 faces in parallel with 1 second timeout
+            Array.from({length: 16}, (_, index) => {
                 fetchWithTimeout('/face', 1000)
                     .then(res => res.json())
-                    .then(data => parseFace(index, data) ?? faceLegend.parseError.face(index))
-                    .catch((error) => {
-                        if (error.message === 'Timeout') {
-                            return faceLegend.timeout.face(index)
-                        }
-                        throw error
+                    .then(data => {
+                        const face = parseFace(index, data) ?? faceLegend.parseError.face(index)
+                        setFaces(currentFaces => {
+                            const newFaces = [...currentFaces]
+                            newFaces[index] = face
+                            return newFaces
+                        })
                     })
-            )
-
-            const fetchedFaces = await Promise.all(facePromises)
-            setFaces(fetchedFaces)
+                    .catch((error) => {
+                        const face = error.message === 'Timeout'
+                            ? faceLegend.timeout.face(index)
+                            : faceLegend.error.face(index)
+                        setFaces(currentFaces => {
+                            const newFaces = [...currentFaces]
+                            newFaces[index] = face
+                            return newFaces
+                        })
+                    })
+            })
         } catch (error) {
             console.error('Error fetching faces:', error)
             setFaces(errorFaces)
         } finally {
-            setLoading(false)
+            // Keep loading state on until all requests complete or timeout
+            setTimeout(() => setLoading(false), 1100)
         }
     }
-
-    useEffect(() => {
-        fetchFaces()
-    }, [])
 
     return (
         <div className="dashboard-container">
