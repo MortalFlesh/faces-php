@@ -1,0 +1,42 @@
+name: PHP - Checks
+
+on:
+    push:
+        branches:
+            - master
+            - main
+    pull_request:
+    schedule:
+        -   cron:  '0 3 * * *'
+
+jobs:
+    checks:
+        runs-on: ubuntu-latest
+        name: Check application
+        steps:
+            # Setup
+            -   uses: actions/checkout@v4
+
+            -   name: '[PHP] Setup'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    extensions: mbstring, intl
+
+            # Prepare application
+            -   name: '[INIT] Check composer.json'
+                run: composer validate --no-check-all --no-check-publish --no-check-lock
+
+            # Install dependencies
+            -   name: '[Install] Install composer dependencies'
+                run: composer install
+
+            # Check application
+            -   name: '[CHECK] analyze'
+                run: composer analyze
+
+            -   name: '[CHECK] phpstan'
+                run: composer phpstan
+
+            -   name: '[CHECK] Unit tests'
+                run: composer test-ci

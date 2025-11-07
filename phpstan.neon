@@ -1,0 +1,9 @@
+parameters:
+    excludePaths:
+
+    reportUnmatchedIgnoredErrors: false     # this config file is shared for more directories, so ignored errors differ, just enable it from time to time and clear the list
+    treatPhpDocTypesAsCertain: false
+
+    ignoreErrors:
+        - identifier: missingType.iterableValue
+        - identifier: missingType.generics
