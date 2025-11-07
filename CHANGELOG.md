@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2025-11-07
+
+### Fixed
+- Nginx configuration updated to work correctly in Kubernetes environment
+    - Removed API proxy configuration (API runs as separate service)
+    - Simplified configuration to serve static files only
+    - Dashboard now expects API to be available via standard k8s service discovery
+
 ## [1.0.0] - 2025-11-07
 
 ### Added
