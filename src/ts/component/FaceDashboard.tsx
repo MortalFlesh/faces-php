@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import {Face, FaceSkeleton, FaceType} from "./Face";
+import {Face, FaceSkeleton, FaceType, parseFace} from "./Face";
+import {FaceLegend, FaceLegendType} from "./FaceLegend";
 
 const exampleFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => ({
     id: index,
@@ -7,21 +8,38 @@ const exampleFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => ({
     color: ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DFE6E9', '#A29BFE', '#FF7675', '#74B9FF', '#A29BFE', '#FD79A8', '#FDCB6E', '#6C5CE7', '#00B894', '#E17055'][index]
 }))
 
-const face = {
-    initial: (id: number): FaceType => ({
-        id,
-        smiley: '😢',
-        color: '#FF6B6B'
-    }),
-    error: (id: number): FaceType => ({
-        id,
-        smiley: '💀',
-        color: '#D63031'
-    }),
+const faceLegend: Record<string, FaceLegendType> = {
+    initial: {
+        name: 'Initial',
+        description: 'Default face state',
+        face: (id: number): FaceType => ({
+            id,
+            smiley: '😢',
+            color: '#FF6B6B'
+        })
+    },
+    error: {
+        name: 'Error',
+        description: 'Failed to fetch face',
+        face: (id: number): FaceType => ({
+            id,
+            smiley: '💀',
+            color: '#D63031'
+        })
+    },
+    parseError: {
+        name: 'Parse Error',
+        description: 'Error parsing face data',
+        face: (id: number): FaceType => ({
+            id,
+            smiley: '🤯',
+            color: '#D63031'
+        })
+    },
 }
 
-const initialFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => (face.initial(index)))
-const errorFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => (face.error(index)))
+const initialFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => (faceLegend.initial.face(index)))
+const errorFaces: FaceType[] = Array.from({ length: 16 }, (_, index) => (faceLegend.error.face(index)))
 
 export default function FaceDashboard() {
     const [loading, setLoading] = useState(false)
@@ -47,7 +65,7 @@ export default function FaceDashboard() {
             const facePromises = Array.from({ length: 16 }, (_, index) =>
                 fetch('/face')
                     .then(res => res.json())
-                    .then(data => ({ id: index, ...data }))
+                    .then(data => parseFace(index, data) ?? faceLegend.parseError.face(index))
             )
 
             const fetchedFaces = await Promise.all(facePromises)
@@ -114,27 +132,11 @@ export default function FaceDashboard() {
             <div className="legend-container">
                 <h2 className="legend-title">Legend</h2>
                 <div className="legend-items">
-                    <div className="legend-item">
-                        <div className="legend-face" style={{ backgroundColor: '#FF6B6B' }}>
-                            <span className="legend-emoji">😢</span>
-                        </div>
-                        <div className="legend-label">
-                            <strong>Initial</strong>
-                            <small>Default state</small>
-                        </div>
-                    </div>
-                    <div className="legend-item">
-                        <div className="legend-face" style={{ backgroundColor: '#D63031' }}>
-                            <span className="legend-emoji">💀</span>
-                        </div>
-                        <div className="legend-label">
-                            <strong>Error</strong>
-                            <small>Failed to fetch</small>
-                        </div>
-                    </div>
+                    {Object.entries(faceLegend).map(([name, legend], index) => (
+                        <FaceLegend key={name} id={index} legend={legend} />
+                    ))}
                 </div>
             </div>
         </div>
     )
 }
-

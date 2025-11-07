@@ -28,3 +28,8 @@ export function Face({ face }: FaceProps) {
         </div>
     )
 }
+
+export function parseFace(index: number, raw: string | object): FaceType|null {
+    // todo
+    return null
+}
