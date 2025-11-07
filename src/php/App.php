@@ -20,32 +20,35 @@ class App
 
     public function handle(Request $request): Response
     {
-        return match ($request->getPathInfo()) {
+        $additionalData = [];
+        $data = match ($request->getPathInfo()) {
             '/face' => $this->face($request),
             default => new JsonResponse(['message' => 'Not Found'], Response::HTTP_NOT_FOUND),
         };
-    }
-
-    public function face(Request $request): Response
-    {
-        $data = [];
-
-        $face = new Face('😀', '#00B894');
-        $face2 = new Face('😎', '#0984E3');
 
         $enableSleep = getenv('ENABLE_SLEEP');
-
         if ($enableSleep === 'true') {
             $sleepMilliseconds = $this->dice->roll() * 100;
             usleep($sleepMilliseconds * 1000);
 
-            $data += ['sleep' => $sleepMilliseconds];
+            $additionalData += ['sleep' => $sleepMilliseconds];
         }
 
-        return new JsonResponse(UnifiedResponse::fromRequest(
-            $request,
-            $this->dice->roll() > 3 ? $face : $face2,
-            $data,
-        ));
+        if ($data instanceof Response) {
+            return $data;
+        }
+
+        $response = new JsonResponse(UnifiedResponse::fromRequest($request, $data, $additionalData));
+        $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        return $response;
+    }
+
+    public function face(Request $request): \JsonSerializable
+    {
+        $face = new Face('😀', '#228833');  // Green from faces-demo
+        $face2 = new Face('😎', '#66CCEE'); // Blue from faces-demo
+
+        return $this->dice->roll() > 3 ? $face : $face2;
     }
 }
