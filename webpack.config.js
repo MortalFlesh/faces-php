@@ -49,7 +49,10 @@ module.exports = (env, argv) => {
         },
         plugins: [
             new webpack.ProgressPlugin(),
-            new CleanWebpackPlugin(),
+            new CleanWebpackPlugin({
+                cleanOnceBeforeBuildPatterns: ['**/*.js', '**/*.css', '**/*.js.map', '**/*.css.map'],
+                cleanAfterEveryBuildPatterns: [],
+            }),
             new MiniCssExtractPlugin(),
         ],
         performance: {

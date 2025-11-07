@@ -28,7 +28,7 @@ FROM nginx:alpine
 RUN apk add --no-cache bash curl iputils
 
 # Copy built files from builder stage
-COPY --from=builder /app/public /usr/share/nginx/html
+COPY --from=builder /app/public/ /usr/share/nginx/html/
 
 # Copy nginx configuration
 COPY etc/nginx.conf /etc/nginx/conf.d/default.conf
