@@ -14,7 +14,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -59,7 +59,7 @@ jobs:
           tags: ${{ steps.meta-dashboard.outputs.tags }}
           labels: ${{ steps.meta-dashboard.outputs.labels }}
 
-      - name: Build and push API image
+      - name: Build and push face image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -68,3 +68,63 @@ jobs:
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}
 
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog for current version
+        id: changelog
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          
+          # Extract changelog content for this version
+          if [ -f CHANGELOG.md ]; then
+            # Get content between this version and the next version heading or end of file
+            CHANGELOG=$(sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' | tail -n +2)
+            
+            # If no content found, try without brackets
+            if [ -z "$CHANGELOG" ]; then
+              CHANGELOG=$(sed -n "/## ${VERSION}/,/## /p" CHANGELOG.md | sed '$d' | tail -n +2)
+            fi
+            
+            # If still no content, use a default message
+            if [ -z "$CHANGELOG" ]; then
+              CHANGELOG="Release version ${VERSION}"
+            fi
+          else
+            CHANGELOG="Release version ${VERSION}"
+          fi
+          
+          # Save to output using heredoc to handle multi-line content
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.version.outputs.version }}
+          body: |
+            ## Docker Images
+            
+            The following Docker images have been published to GitHub Container Registry:
+            
+            ### Dashboard
+            ```
+            docker pull ${{ env.REGISTRY }}/${{ env.DASHBOARD_IMAGE_NAME }}:${{ steps.version.outputs.version }}
+            docker pull ${{ env.REGISTRY }}/${{ env.DASHBOARD_IMAGE_NAME }}:latest
+            ```
+            
+            ### Face API
+            ```
+            docker pull ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ steps.version.outputs.version }}
+            docker pull ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:latest
+            ```
+            
+            ## Changelog
+            
+            ${{ steps.changelog.outputs.content }}
+          draft: false
+          prerelease: false
