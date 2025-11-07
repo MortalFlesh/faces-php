@@ -11,7 +11,8 @@
         "lmc/cqrs-handler": "^2.0",
         "lmc/cqrs-http": "^3.0",
         "mf/collections-php": "^7.1",
-        "nyholm/psr7": "^1.4"
+        "nyholm/psr7": "^1.4",
+        "symfony/http-foundation": "^7.3"
     },
     "require-dev": {
         "almacareer/coding-standard": "^4.2",
@@ -28,12 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "MF\\": "src/"
+            "MF\\Faces\\": "src/php/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MF\\Tests\\": "tests/"
+            "MF\\Faces\\Tests\\": "tests/"
         }
     },
     "config": {

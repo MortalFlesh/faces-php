@@ -56,7 +56,7 @@ body {
 .face-item {
     background: #f8f9fa;
     border-radius: 15px;
-    padding: 1.5rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -75,39 +75,7 @@ body {
 }
 
 .face-emoji {
-    font-size: 4rem;
-    margin-bottom: 0.5rem;
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-.face-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.85rem;
-    text-align: center;
-    width: 100%;
-}
-
-.face-info-label {
-    font-weight: 600;
-    color: #999;
-    font-size: 0.75rem;
-}
-
-.face-info-value {
-    font-weight: 700;
-    color: #667eea;
-    font-size: 0.9rem;
+    font-size: 3.2rem;
 }
 
 .face-actions {
@@ -191,8 +159,8 @@ body {
 }
 
 .placeholder-circle {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
     background-size: 200% 100%;
