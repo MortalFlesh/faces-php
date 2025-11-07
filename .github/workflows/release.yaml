@@ -71,17 +71,21 @@ jobs:
       - name: Extract version from tag
         id: version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
+          # Strip refs/tags/ prefix and v prefix if present
+          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION=${VERSION#v}
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Extracted version: ${VERSION}"
 
       - name: Extract changelog for current version
         id: changelog
         run: |
           VERSION=${{ steps.version.outputs.version }}
+          echo "Looking for changelog entry for version: ${VERSION}"
           
           # Extract changelog content for this version
           if [ -f CHANGELOG.md ]; then
-            # Get content between this version and the next version heading or end of file
+            # Try with brackets first [X.Y.Z]
             CHANGELOG=$(sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' | tail -n +2)
             
             # If no content found, try without brackets
@@ -91,9 +95,13 @@ jobs:
             
             # If still no content, use a default message
             if [ -z "$CHANGELOG" ]; then
+              echo "Warning: No changelog entry found for version ${VERSION}"
               CHANGELOG="Release version ${VERSION}"
+            else
+              echo "Found changelog entry for version ${VERSION}"
             fi
           else
+            echo "Warning: CHANGELOG.md not found"
             CHANGELOG="Release version ${VERSION}"
           fi
           
