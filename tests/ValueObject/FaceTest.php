@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-use MF\Faces\ValueObject\Face;
+use MF\Faces\Color\ValueObject\Color;
+use MF\Faces\Face\ValueObject\Face;
+use MF\Faces\Smiley\ValueObject\Smiley;
 use PHPUnit\Framework\TestCase;
 
 class FaceTest extends TestCase
@@ -10,7 +12,7 @@ class FaceTest extends TestCase
         $smiley = '😀';
         $color = '#00B894';
 
-        $face = new Face($smiley, $color);
+        $face = new Face(new Smiley($smiley), new Color($color));
 
         $this->assertEquals(
             [

@@ -32,3 +32,20 @@ Faces App
     │smiley2  │ │color2  │ <-- 50% traffic goes here
     └─────────┘ └────────┘
 
+## Usage
+
+### Environment variables / Configuation
+
+Common
+- `LOCALHOST`
+- `ENABLE_SLEEP`
+
+Faces app
+- `SMILEY_HOST`
+- `COLOR_HOST`
+
+Smiley app
+- `SMILEY`
+
+Color app
+- `COLOR`

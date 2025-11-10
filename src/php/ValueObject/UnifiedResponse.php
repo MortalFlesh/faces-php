@@ -4,7 +4,7 @@ namespace MF\Faces\ValueObject;
 
 use Symfony\Component\HttpFoundation\Request;
 
-readonly class UnifiedResponse implements \JsonSerializable
+readonly class UnifiedResponse implements ResponseInterface
 {
     public function __construct(
         private string $clientAddress,

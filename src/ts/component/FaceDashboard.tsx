@@ -80,7 +80,7 @@ export default function FaceDashboard() {
 
                 <div className="face-grid">
                     {indexes.map((index) => (
-                        <SingleFace
+                        <SingleFaceApp
                             key={index}
                             index={index}
                             isRunning={isRunning}
