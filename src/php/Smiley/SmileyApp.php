@@ -40,9 +40,14 @@ class SmileyApp implements AppInterface
         $this->smileys = $smileys;
     }
 
+    public static function getRole(): ?string
+    {
+        return 'smiley';
+    }
+
     public static function path(): string
     {
-        return '/smiley';
+        return sprintf('/%s', self::getRole());
     }
 
     public function getPath(): string

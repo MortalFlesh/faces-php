@@ -3,11 +3,10 @@
 namespace MF\Faces;
 
 use MF\Collection\Immutable\Generic\IList;
-use MF\Collection\Immutable\Generic\ListCollection;
-use MF\Faces\HealthCheck\HealthCheckApp;
 use MF\Faces\Service\AppFactory;
 use MF\Faces\Service\Dice;
 use MF\Faces\Service\Environment;
+use MF\Faces\Service\RoleManager;
 use MF\Faces\ValueObject\AppInterface;
 use MF\Faces\ValueObject\UnifiedResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,29 +19,27 @@ class App
     private Environment $environment;
     /** @var IList<AppInterface> */
     private IList $handlers;
+    private ?string $role;
 
     public function __construct()
     {
         $this->dice = new Dice();
         $this->environment = new Environment();
-        $appFactory = new AppFactory($this->environment);
+        $roleManager = new RoleManager(new AppFactory($this->environment));
 
-        /** @phpstan-var ListCollection<AppInterface> */
-        $handlers = ListCollection::from([
-            new HealthCheckApp(),
-            $appFactory->createFaceApp(),
-            $appFactory->createColorApp(),
-            $appFactory->createSmileyApp(),
-            $appFactory->createInfoApp(),
-        ]);
+        $this->role = $this->environment->tryGetValue('ROLE');
 
-        $this->handlers = $handlers;
+        $this->handlers = $roleManager->getHandlersForRole($this->role);
     }
 
     public function handle(Request $request): Response
     {
         $path = $request->getPathInfo();
         $additionalData = [];
+
+        if ($this->role && (empty($path) || $path === '/')) {
+            $path = sprintf('/%s', $this->role);
+        }
 
         $response = $this->handlers
             ->firstBy(fn(AppInterface $handler) => $handler->getPath() === $path)

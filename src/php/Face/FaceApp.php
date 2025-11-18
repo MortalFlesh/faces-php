@@ -15,9 +15,14 @@ class FaceApp implements AppInterface
 {
     public function __construct(private QueryFactory $queryFactory, private QueryFetcherInterface $queryFetcher) {}
 
+    public static function getRole(): ?string
+    {
+        return 'face';
+    }
+
     public static function path(): string
     {
-        return '/face';
+        return sprintf('/%s', self::getRole());
     }
 
     public function getPath(): string

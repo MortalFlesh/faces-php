@@ -38,6 +38,7 @@ class Environment
             'SMILEY' => $this->tryGetValue('SMILEY'),
             'COLOR_HOST' => $this->tryGetValue('COLOR_HOST'),
             'COLOR' => $this->tryGetValue('COLOR'),
+            'ROLE' => $this->tryGetValue('ROLE'),
         ];
     }
 }

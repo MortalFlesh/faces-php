@@ -13,6 +13,11 @@ class InfoApp implements AppInterface
 {
     public function __construct(private Environment $environment) {}
 
+    public static function getRole(): ?string
+    {
+        return null;
+    }
+
     public static function path(): string
     {
         return '/info';
