@@ -1,8 +1,9 @@
 import {Suspense, useEffect, useState, useRef} from 'react'
-import {repeat, takeWhile} from 'rxjs'
+import {repeat, takeWhile, interval} from 'rxjs'
 import {Face, FaceSkeleton, FaceType} from "./Face";
 import {faceLegend, FaceLegend} from "./FaceLegend";
 import {fetchSingleFace} from "../service/face";
+import {checkHealth} from "../service/healthCheck";
 import {useBase} from "./Base";
 
 type SingleFaceProps = {
@@ -61,7 +62,25 @@ export default function FaceDashboard() {
     const {faces} = useBase()
 
     const [isRunning, setIsRunning] = useState(false)
+    const [healthFace, setHealthFace] = useState<FaceType>(faceLegend.initial.face(0))
     const indexes = Array.from({length: faces}, (_, index) => index)
+
+    // Check health status periodically
+    useEffect(() => {
+        const subscription = interval(15000).pipe( // Check every 15 seconds
+        ).subscribe(() => {
+            checkHealth().subscribe((isHealthy) => {
+                setHealthFace(isHealthy ? faceLegend.healthy.face(0) : faceLegend.error.face(0))
+            })
+        })
+
+        // Initial check
+        checkHealth().subscribe((isHealthy) => {
+            setHealthFace(isHealthy ? faceLegend.healthy.face(0) : faceLegend.error.face(0))
+        })
+
+        return () => subscription.unsubscribe()
+    }, [])
 
     const handleStart = () => {
         setIsRunning(true)
@@ -107,6 +126,15 @@ export default function FaceDashboard() {
             </div>
 
             <div className="legend-container">
+                <div className="health-status-container">
+                    <h2 className="health-status-title">Health status</h2>
+                    <div className="health-status-face">
+                        <Face face={healthFace} isLoading={false} />
+                    </div>
+                </div>
+
+                <div className="legend-delimiter"></div>
+
                 <h2 className="legend-title">Legend</h2>
                 <div className="legend-items">
                     {Object.entries(faceLegend).map(([name, legend], index) => (

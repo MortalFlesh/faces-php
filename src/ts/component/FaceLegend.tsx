@@ -18,6 +18,15 @@ export const faceLegend: Record<string, FaceLegendType> = {
             color: '#DFE6E9'
         })
     },
+    healthy: {
+        name: 'Healthy',
+        description: 'Healthy face',
+        face: (id: number): FaceType => ({
+            id,
+            smiley: '😄',
+            color: '#00B894'
+        })
+    },
     error: {
         name: 'Error',
         description: 'Failed to fetch face',

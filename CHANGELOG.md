@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added `/health-check` app
 - Added `/info` app
+- Show health status on dashboard
 
 ## [1.3.0] - 2025-11-07
 
