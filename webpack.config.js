@@ -83,6 +83,11 @@ module.exports = (env, argv) => {
                     target: 'http://localhost:8080',
                     changeOrigin: true,
                 },
+                {
+                    context: ['/health-check'],
+                    target: 'http://localhost:8080',
+                    changeOrigin: true,
+                },
             ],
         },
     }
