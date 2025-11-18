@@ -1,0 +1,297 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: faces-mf
+    labels:
+        pod-security.kubernetes.io/enforce: privileged
+        pod-security.kubernetes.io/audit: privileged
+        pod-security.kubernetes.io/warn: privileged
+    annotations:
+        istio-injection: enabled
+---
+# Dashboard deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: dashboard
+    namespace: faces-mf
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: dashboard
+    template:
+        metadata:
+            labels:
+                app: dashboard
+        spec:
+            containers:
+                - name: dashboard
+                  image: ghcr.io/mortalflesh/faces-dashboard:1.5.0
+                  ports:
+                      - containerPort: 3000
+                        name: http
+                  resources:
+                      requests:
+                          cpu: 50m
+                          memory: 64Mi
+                      limits:
+                          cpu: 100m
+                          memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: dashboard
+    namespace: faces-mf
+spec:
+    selector:
+        app: dashboard
+    ports:
+        - port: 80
+          targetPort: 3000
+          name: http
+---
+# Face deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: face
+    namespace: faces-mf
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: face
+    template:
+        metadata:
+            labels:
+                app: face
+        spec:
+            containers:
+                - name: face
+                  image: ghcr.io/mortalflesh/faces-face:1.5.0
+                  env:
+                      - name: ROLE
+                        value: face
+                      - name: SMILEY_HOST
+                        value: "smiley"
+                      - name: COLOR_HOST
+                        value: "color"
+                  ports:
+                      - containerPort: 8080
+                        name: http
+                  readinessProbe:
+                      httpGet:
+                          path: /health-check
+                          port: http
+                      initialDelaySeconds: 3
+                  resources:
+                      requests:
+                          cpu: 50m
+                          memory: 64Mi
+                      limits:
+                          cpu: 100m
+                          memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: face
+    namespace: faces-mf
+spec:
+    selector:
+        app: face
+    ports:
+        - port: 80
+          targetPort: 8080
+          name: http
+---
+# Smiley deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: smiley
+    namespace: faces-mf
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: smiley
+    template:
+        metadata:
+            labels:
+                app: smiley
+        spec:
+            containers:
+                - name: smiley
+                  image: ghcr.io/mortalflesh/faces-face:1.5.0
+                  env:
+                      - name: ROLE
+                        value: "smiley"
+                  ports:
+                      - containerPort: 8080
+                        name: http
+                  readinessProbe:
+                      httpGet:
+                          path: /health-check
+                          port: http
+                      initialDelaySeconds: 3
+                  resources:
+                      requests:
+                          cpu: 50m
+                          memory: 64Mi
+                      limits:
+                          cpu: 100m
+                          memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: smiley
+    namespace: faces-mf
+spec:
+    selector:
+        app: smiley
+    ports:
+        - port: 80
+          targetPort: 8080
+          name: http
+---
+# Color deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: color
+    namespace: faces-mf
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: color
+    template:
+        metadata:
+            labels:
+                app: color
+        spec:
+            containers:
+                - name: color
+                  image: ghcr.io/mortalflesh/faces-face:1.5.0
+                  env:
+                      - name: ROLE
+                        value: "color"
+                  ports:
+                      - containerPort: 8080
+                        name: http
+                  readinessProbe:
+                      httpGet:
+                          path: /health-check
+                          port: http
+                      initialDelaySeconds: 3
+                  resources:
+                      requests:
+                          cpu: 50m
+                          memory: 64Mi
+                      limits:
+                          cpu: 100m
+                          memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: color
+    namespace: faces-mf
+spec:
+    selector:
+        app: color
+    ports:
+        - port: 80
+          targetPort: 8080
+          name: http
+---
+# HTTP Routes
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+    name: faces-dashboard-route
+    namespace: faces-mf
+spec:
+    parentRefs:
+        - name: traefik-gateway
+          namespace: kube-system
+          sectionName: web
+    hostnames:
+        - faces-mf.adun
+    rules:
+        - matches:
+              - path:
+                    type: PathPrefix
+                    value: /
+          backendRefs:
+              - name: dashboard
+                port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+    name: faces-face-route
+    namespace: faces-mf
+spec:
+    parentRefs:
+        - name: traefik-gateway
+          namespace: kube-system
+          sectionName: web
+    hostnames:
+        - faces-mf.adun
+    rules:
+        - matches:
+              - path:
+                    type: PathPrefix
+                    value: /face
+          backendRefs:
+              - name: face
+                port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+    name: faces-smiley-route
+    namespace: faces-mf
+spec:
+    parentRefs:
+        - name: traefik-gateway
+          namespace: kube-system
+          sectionName: web
+    hostnames:
+        - faces-mf.adun
+    rules:
+        - matches:
+              - path:
+                    type: PathPrefix
+                    value: /smiley
+          backendRefs:
+              - name: smiley
+                port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+    name: faces-color-route
+    namespace: faces-mf
+spec:
+    parentRefs:
+        - name: traefik-gateway
+          namespace: kube-system
+          sectionName: web
+    hostnames:
+        - faces-mf.adun
+    rules:
+        - matches:
+              - path:
+                    type: PathPrefix
+                    value: /color
+          backendRefs:
+              - name: color
+                port: 80
+---
