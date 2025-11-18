@@ -28,4 +28,16 @@ class Environment
 
         return $value === 'true';
     }
+
+    public function getApplicationValues(): array
+    {
+        return [
+            'LOCALHOST' => $this->tryGetValue('LOCALHOST') ?? 'localhost:8080',
+            'ENABLE_SLEEP' => $this->getBoolean('ENABLE_SLEEP'),
+            'SMILEY_HOST' => $this->tryGetValue('SMILEY_HOST'),
+            'SMILEY' => $this->tryGetValue('SMILEY'),
+            'COLOR_HOST' => $this->tryGetValue('COLOR_HOST'),
+            'COLOR' => $this->tryGetValue('COLOR'),
+        ];
+    }
 }

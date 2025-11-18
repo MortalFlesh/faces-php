@@ -4,6 +4,7 @@ namespace MF\Faces;
 
 use MF\Collection\Immutable\Generic\IList;
 use MF\Collection\Immutable\Generic\ListCollection;
+use MF\Faces\HealthCheck\HealthCheckApp;
 use MF\Faces\Service\AppFactory;
 use MF\Faces\Service\Dice;
 use MF\Faces\Service\Environment;
@@ -28,9 +29,11 @@ class App
 
         /** @phpstan-var ListCollection<AppInterface> */
         $handlers = ListCollection::from([
+            new HealthCheckApp(),
             $appFactory->createFaceApp(),
             $appFactory->createColorApp(),
             $appFactory->createSmileyApp(),
+            $appFactory->createInfoApp(),
         ]);
 
         $this->handlers = $handlers;

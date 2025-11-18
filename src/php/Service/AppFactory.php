@@ -12,6 +12,7 @@ use MF\Faces\Color\ColorApp;
 use MF\Faces\Face\FaceApp;
 use MF\Faces\Face\Service\QueryDecoder;
 use MF\Faces\Face\Service\QueryFactory;
+use MF\Faces\Info\InfoApp;
 use MF\Faces\Smiley\SmileyApp;
 use MF\Faces\ValueObject\AppInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -50,5 +51,10 @@ class AppFactory
     public function createColorApp(): AppInterface
     {
         return new ColorApp($this->environment);
+    }
+
+    public function createInfoApp(): AppInterface
+    {
+        return new InfoApp($this->environment);
     }
 }
