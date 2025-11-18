@@ -43,9 +43,14 @@ class ColorApp implements AppInterface
         $this->colors = $colors;
     }
 
+    public static function getRole(): ?string
+    {
+        return 'color';
+    }
+
     public static function path(): string
     {
-        return '/color';
+        return sprintf('/%s', self::getRole());
     }
 
     public function getPath(): string

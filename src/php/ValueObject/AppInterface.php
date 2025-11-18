@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 interface AppInterface
 {
+    public static function getRole(): ?string;
+
     public static function path(): string;
 
     public function getPath(): string;

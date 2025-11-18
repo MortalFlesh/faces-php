@@ -23,4 +23,9 @@ class HealthCheckApp implements AppInterface
     {
         return new Response('OK', Response::HTTP_OK);
     }
+
+    public static function getRole(): ?string
+    {
+        return null;
+    }
 }
