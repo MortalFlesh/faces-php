@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Trap SIGINT and SIGTERM to ensure subprocesses are killed
+trap 'echo "Shutting down..."; kill 0' SIGINT SIGTERM EXIT
+
+# PHP built-int server is single threaded, so we run two separate instances for different hosts
+export SMILEY_HOST="localhost:8081"
+export SMILEY="love"
+
+export COLOR_HOST="localhost:8082"
+export COLOR="cyan"
+
+echo "Starting PHP face application..."
+composer start &
+PHP_PID=$!
+
+echo "Starting PHP smiley application..."
+composer start-1 &
+PHP_SMILEY_PID=$!
+
+echo "Starting PHP color application..."
+composer start-2 &
+PHP_COLOR_PID=$!
+
+echo "Starting TS application..."
+npm run start &
+NPM_PID=$!
+
+echo "Running... (Press Ctrl+C to stop both servers)"
+echo "PHP server PID: $PHP_PID, $PHP_SMILEY_PID, $PHP_COLOR_PID"
+echo "NPM server PID: $NPM_PID"
+
+# Wait for both processes - if either exits, this script will exit
+wait
