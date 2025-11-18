@@ -14,7 +14,7 @@ class UrlFactory
 
         $host = $this->environment->tryGetValue($hostName)
             ?? $this->environment->tryGetValue('LOCALHOST')
-            ?? '127.0.0.1:8080';
+            ?? 'localhost:8080';
 
         // var_dump([
         //     'hostName' => $hostName,

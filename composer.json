@@ -78,6 +78,9 @@
         "phpstan": "bin/phpstan analyze -l 8 -c phpstan.neon src tests",
         "phpstan-src": "bin/phpstan analyze -l 8 -c phpstan.neon src",
         "phpstan-tests": "bin/phpstan analyze -l 8 -c phpstan.neon tests",
+        "start": "php -S localhost:8080 -t src",
+        "start-1": "php -S localhost:8081 -t src",
+        "start-2": "php -S localhost:8082 -t src",
         "test": "bin/phpunit -c phpunit.xml.dist",
         "test-ci": "mkdir -p reports && php -dxdebug.coverage_enable=1 bin/phpunit -c phpunit.xml.dist --exclude-group local --exclude-group integration"
     }
