@@ -44,7 +44,10 @@ class App
         $response = $this->handlers
             ->firstBy(fn(AppInterface $handler) => $handler->getPath() === $path)
             ?->handle($request)
-            ?? new JsonResponse(['message' => 'Not Found'], Response::HTTP_NOT_FOUND);
+            ?? new JsonResponse(
+                UnifiedResponse::fromRequest($request, ['message' => 'Not Found'], $additionalData),
+                Response::HTTP_NOT_FOUND,
+            );
 
         if ($this->environment->getBoolean('ENABLE_SLEEP')) {
             $sleepMilliseconds = $this->dice->roll() * 100;
