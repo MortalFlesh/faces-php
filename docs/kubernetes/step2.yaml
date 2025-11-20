@@ -114,50 +114,6 @@ spec:
           targetPort: 8080
           name: http
 ---
-# HTTPRoute for external access to smiley2
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-    name: faces-smiley2-route
-    namespace: faces-mf
-spec:
-    parentRefs:
-        - name: traefik-gateway
-          namespace: kube-system
-          sectionName: web
-    hostnames:
-        - faces-mf.adun
-    rules:
-        - matches:
-              - path:
-                    type: PathPrefix
-                    value: /smiley2
-          backendRefs:
-              - name: smiley2
-                port: 80
----
-# HTTPRoute for external access to color2
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-    name: faces-color2-route
-    namespace: faces-mf
-spec:
-    parentRefs:
-        - name: traefik-gateway
-          namespace: kube-system
-          sectionName: web
-    hostnames:
-        - faces-mf.adun
-    rules:
-        - matches:
-              - path:
-                    type: PathPrefix
-                    value: /color2
-          backendRefs:
-              - name: color2
-                port: 80
----
 # Smiley canary routing - splits internal traffic 50/50 between smiley and smiley2
 # This intercepts traffic from face service to "smiley" service
 apiVersion: gateway.networking.k8s.io/v1
@@ -201,4 +157,3 @@ spec:
               - name: color2
                 port: 80
                 weight: 50
-
