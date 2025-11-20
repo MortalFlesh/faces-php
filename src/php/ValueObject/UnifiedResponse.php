@@ -12,11 +12,11 @@ readonly class UnifiedResponse implements ResponseInterface
         private array $headers,
         private string $method,
         private string $path,
-        private \JsonSerializable $body,
+        private \JsonSerializable|array $body,
         private array $additional = [],
     ) {}
 
-    public static function fromRequest(Request $request, \JsonSerializable $body, array $additional = []): self
+    public static function fromRequest(Request $request, \JsonSerializable|array $body, array $additional = []): self
     {
         return new self(
             clientAddress: $request->getClientIp() ?? 'unknown',
@@ -40,7 +40,7 @@ readonly class UnifiedResponse implements ResponseInterface
                 'method' => $this->method,
                 'path' => $this->path,
             ],
-            $this->body->jsonSerialize(),
+            is_array($this->body) ? $this->body : $this->body->jsonSerialize(),
         );
     }
 }

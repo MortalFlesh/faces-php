@@ -32,7 +32,7 @@ class Environment
     public function getApplicationValues(): array
     {
         return [
-            'LOCALHOST' => $this->tryGetValue('LOCALHOST') ?? 'localhost:8080',
+            'LOCALHOST' => $this->tryGetValue('LOCALHOST'),
             'ENABLE_SLEEP' => $this->getBoolean('ENABLE_SLEEP'),
             'SMILEY_HOST' => $this->tryGetValue('SMILEY_HOST'),
             'SMILEY' => $this->tryGetValue('SMILEY'),

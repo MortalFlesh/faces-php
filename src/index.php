@@ -3,6 +3,9 @@
 use MF\Faces\App;
 use Symfony\Component\HttpFoundation\Request;
 
+// disable deprecated notices
+error_reporting(E_ALL & ~E_DEPRECATED);
+
 require '../vendor/autoload.php';
 
 $request = Request::createFromGlobals();
